@@ -33,7 +33,7 @@
 
         body {
             min-height: 100vh;
-            background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
             color: var(--text-color);
             position: relative;
             padding-bottom: 50px;
@@ -104,6 +104,27 @@
         .nav-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             border-color: #4facfe;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: 15px;
+        }
+
+        .user-avatar-nav {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: rgba(79, 172, 254, 0.2);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            border: 2px solid #4facfe;
         }
 
         /* Stats Grid */
@@ -513,7 +534,14 @@
             <div class="logo">
                 <i class="fas fa-user-shield"></i> VBS Admin
             </div>
-            <div class="nav-actions">
+            <div class="nav-actions" style="align-items: center;">
+                <div class="user-profile">
+                    <div class="user-avatar-nav" id="adminAvatar">??</div>
+                    <div style="text-align: right;">
+                        <div id="adminNameDisplay" style="font-weight: 500; font-size: 14px;">Admin</div>
+                        <div style="font-size: 11px; opacity: 0.7;">ID: <span id="adminIdDisplay">-</span></div>
+                    </div>
+                </div>
                 <button class="nav-btn" onclick="goToHistory()">
                     <i class="fas fa-history"></i> History
                 </button>
@@ -672,6 +700,39 @@
             adminId = params.get('id');
             // Check session storage if not in URL
             if (!adminId) adminId = localStorage.getItem('userId');
+
+            if (adminId) {
+                document.getElementById('adminIdDisplay').innerText = adminId;
+                loadAdminInfo(adminId);
+            } else {
+                window.location.href = 'login.html';
+            }
+        }
+
+        async function loadAdminInfo(id) {
+            try {
+                const res = await fetch(`${API_URL}/get-details/${id}`);
+                const data = await res.json();
+
+                // Name or Username
+                const name = data.name || data.username || 'Admin';
+                document.getElementById('adminNameDisplay').innerText = name;
+
+                // Initials
+                let initials = 'AD';
+                if (name) {
+                    const parts = name.trim().split(/\s+/);
+                    if (parts.length >= 2) {
+                        initials = (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+                    } else if (parts.length === 1 && parts[0].length > 0) {
+                        initials = parts[0].substring(0, 2).toUpperCase();
+                    }
+                }
+                document.getElementById('adminAvatar').innerText = initials;
+
+            } catch (e) {
+                console.error("Failed to load admin info", e);
+            }
         }
 
         async function loadUsers() {
