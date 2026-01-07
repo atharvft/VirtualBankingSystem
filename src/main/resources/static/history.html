@@ -1,265 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>History - Virtual Banking System</title>
+  <title>Transaction History | VBS</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --text-color: #ffffff;
+      --secondary-text: rgba(255, 255, 255, 0.7);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      padding: 20px;
+      background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+      color: var(--text-color);
+      position: relative;
+      padding-bottom: 50px;
+    }
+
+    /* Overlay */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.9);
+      z-index: 0;
+      position: fixed;
     }
 
     .container {
-      max-width: 1100px;
+      position: relative;
+      z-index: 1;
+      max-width: 900px;
       margin: 0 auto;
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 30px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .header h1 {
-      font-size: 28px;
-      font-weight: 600;
-    }
-
-    .btn-header {
-      padding: 10px 20px;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: 2px solid white;
-      border-radius: 8px;
-      cursor: pointer;
-      text-decoration: none;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
-
-    .btn-header:hover {
-      background: white;
-      color: #667eea;
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .content {
-      padding: 40px 30px;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-      border-radius: 12px;
-      background: #f8f9fa;
       padding: 20px;
     }
 
-    .history-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
+    /* Navigation */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .history-table thead {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px 20px;
+      border-radius: 30px;
       color: white;
-    }
-
-    .history-table th {
-      padding: 16px 15px;
-      text-align: left;
-      font-weight: 600;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
       font-size: 14px;
-      letter-spacing: 0.5px;
     }
 
-    .history-table tbody tr {
-      border-bottom: 1px solid #e0e0e0;
-      transition: all 0.2s ease;
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-3px);
     }
 
-    .history-table tbody tr:hover {
-      background-color: #f5f7ff;
-      box-shadow: inset 0 0 10px rgba(102, 126, 234, 0.05);
+    /* Timeline / List Styles */
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
     }
 
-    .history-table td {
-      padding: 14px 15px;
-      font-size: 14px;
-      color: #333;
+    .history-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      border: var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s;
     }
 
-    .history-table td:first-child {
-      font-weight: 600;
-      color: #667eea;
-      width: 60px;
+    .history-card:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.15);
     }
 
-    .history-table td:nth-child(2) {
-      color: #555;
-      word-break: break-word;
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
     }
 
-    .date {
-      color: #999;
-      font-size: 12px;
-      white-space: nowrap;
+    .icon-box {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #4facfe;
     }
 
-    .history-empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: #999;
+    .details h3 {
       font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 4px;
     }
 
-    .history-empty::before {
-      content: '📋';
-      display: block;
-      font-size: 48px;
+    .details p {
+      font-size: 12px;
+      color: var(--secondary-text);
+    }
+
+    .card-right {
+      text-align: right;
+    }
+
+    .transaction-id {
+      font-size: 12px;
+      color: var(--secondary-text);
+      font-family: monospace;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 0;
+      color: var(--secondary-text);
+    }
+
+    .empty-state i {
+      font-size: 40px;
       margin-bottom: 15px;
+      opacity: 0.5;
     }
 
-    @media (max-width: 768px) {
-      .header {
+    @media (max-width: 600px) {
+      .history-card {
         flex-direction: column;
+        align-items: flex-start;
         gap: 15px;
-        text-align: center;
       }
 
-      .header h1 {
-        font-size: 22px;
-      }
-
-      .history-table th,
-      .history-table td {
-        padding: 10px;
-        font-size: 12px;
-      }
-
-      .content {
-        padding: 20px 15px;
-      }
-
-      .table-wrapper {
-        padding: 10px;
+      .card-right {
+        text-align: left;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
     }
   </style>
 </head>
+
 <body>
-<div class="container">
-  <div class="header">
-    <h1>History</h1>
-    <div>
-      <button class="btn-header" onclick="goBackToAdmin()">← Back</button>
+
+  <div class="container">
+
+    <div class="header">
+      <h1>Global History</h1>
+      <a onclick="goBack()" class="back-btn" style="cursor: pointer;">
+        <i class="fas fa-arrow-left"></i> Back
+      </a>
     </div>
-  </div>
-  <div class="content">
-    <div id="historyMessage" class="history-empty" style="display:none"></div>
-    <div class="table-wrapper">
-      <table class="history-table" id="historyTable">
-        <thead>
-        <tr>
-          <th>ID</th>
-          <th>Description</th>
-          <th>Date</th>
-        </tr>
-        </thead>
-        <tbody id="historyBody">
-        <tr>
-          <td colspan="3" class="history-empty">Loading history...</td>
-        </tr>
-        </tbody>
-      </table>
+
+    <div id="loading" class="empty-state">
+      <i class="fas fa-circle-notch fa-spin"></i>
+      <p>Loading records...</p>
     </div>
+
+    <div id="historyList" class="history-list"></div>
+
   </div>
-</div>
 
-<script>
-  const API_URL = 'http://localhost:8081';
-  let userId = null;
+  <script>
+    const API_URL = 'http://localhost:8081';
 
-  function getUserIdFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    const urlUserId = params.get('id');
-    const storedUserId = localStorage.getItem('userId');
-    userId = storedUserId || urlUserId;
-  }
+    function goBack() {
+      const params = new URLSearchParams(window.location.search);
+      const userId = params.get('id');
+      const role = params.get('role');
 
-  function goBackToAdmin() {
-    const params = new URLSearchParams();
-    if (userId) params.set('id', userId);
-    params.set('role', 'admin');
-    window.location.href = `admin.html?${params.toString()}`;
-  }
-
-  async function loadHistories() {
-    try {
-      const res = await fetch(`${API_URL}/histories`);
-      if (!res.ok) throw new Error('Failed to load histories');
-      const histories = await res.json();
-      renderHistories(histories);
-    } catch (err) {
-      console.error(err);
-      const body = document.getElementById('historyBody');
-      body.innerHTML = `<tr><td colspan="3" class="history-empty">Unable to load history. Ensure backend is running.</td></tr>`;
-    }
-  }
-
-  function renderHistories(list) {
-    const body = document.getElementById('historyBody');
-    if (!list || list.length === 0) {
-      body.innerHTML = `<tr><td colspan="3" class="history-empty">No history records found.</td></tr>`;
-      return;
+      if (role === 'admin') {
+        if (userId) window.location.href = `admin.html?id=${userId}`;
+        else window.location.href = 'admin.html';
+      } else {
+        if (userId) window.location.href = `dashboard.html?id=${userId}`;
+        else window.location.href = 'login.html';
+      }
     }
 
-    body.innerHTML = list.map(h => `
-            <tr>
-                <td>#${h.id}</td>
-                <td>${escapeHtml(h.description)}</td>
-                <td class="date">${formatDate(h.date)}</td>
-            </tr>
-        `).join('');
-  }
+    async function loadHistory() {
+      try {
+        const res = await fetch(`${API_URL}/histories`);
+        if (!res.ok) throw new Error("Failed");
+        const data = await res.json();
+        renderList(data);
+      } catch (err) {
+        document.getElementById('loading').innerHTML = `
+                    <i class="fas fa-exclamation-circle" style="color: #ff4757;"></i>
+                    <p>Failed to load history.</p>
+                `;
+      }
+    }
 
-  function formatDate(d) {
-    if (!d) return '';
-    const dt = new Date(d);
-    if (isNaN(dt)) return d;
-    return dt.toLocaleString();
-  }
+    function renderList(data) {
+      const container = document.getElementById('historyList');
+      document.getElementById('loading').style.display = 'none';
 
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>"']/g, function(c) {
-      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c];
-    });
-  }
+      if (!data || data.length === 0) {
+        container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-history"></i>
+                        <p>No transaction history found.</p>
+                    </div>
+                `;
+        return;
+      }
 
-  window.addEventListener('DOMContentLoaded', () => {
-    getUserIdFromURL();
-    loadHistories();
-  });
-</script>
+      // Sort by ID desc as proxy for time if date not granular enough
+      data.sort((a, b) => b.id - a.id);
+
+      container.innerHTML = data.map(item => `
+                <div class="history-card">
+                    <div class="card-left">
+                        <div class="icon-box">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="details">
+                            <h3>${item.description}</h3>
+                            <p>${new Date(item.date).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                        </div>
+                    </div>
+                    <div class="card-right">
+                        <span class="transaction-id">#${item.id}</span>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    window.onload = loadHistory;
+  </script>
 </body>
+
 </html>

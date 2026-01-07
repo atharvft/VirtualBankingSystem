@@ -1,116 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Virtual Banking System - Login</title>
+  <title>Login | VBS</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+      --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+      --text-color: #ffffff;
+      --input-bg: rgba(255, 255, 255, 0.05);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-
-    .container {
-      width: 90%;
-      max-width: 450px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      background: url('https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+      position: relative;
       overflow: hidden;
     }
 
+    /* Dark Overlay */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: var(--glass-border);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: var(--glass-shadow);
+      animation: slideUp 0.8s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
     .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 30px;
       text-align: center;
-      color: white;
+      margin-bottom: 30px;
+    }
+
+    .logo-icon {
+      font-size: 40px;
+      color: #4facfe;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(79, 172, 254, 0.4);
+      }
+
+      50% {
+        transform: scale(1.1);
+        text-shadow: 0 0 20px rgba(79, 172, 254, 0.8);
+      }
+
+      100% {
+        transform: scale(1);
+        text-shadow: 0 0 0 rgba(79, 172, 254, 0.4);
+      }
     }
 
     .header h1 {
+      color: white;
       font-size: 28px;
+      font-weight: 700;
       margin-bottom: 5px;
     }
 
     .header p {
+      color: rgba(255, 255, 255, 0.7);
       font-size: 14px;
-      opacity: 0.9;
-    }
-
-    .content {
-      padding: 40px 30px;
     }
 
     .form-group {
       margin-bottom: 20px;
+      position: relative;
     }
 
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      color: #333;
-      font-weight: 500;
-      font-size: 14px;
+    .form-group i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 16px;
     }
 
     .form-group input,
     .form-group select {
       width: 100%;
-      padding: 12px 15px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
+      padding: 14px 14px 14px 45px;
+      background: var(--input-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: white;
       font-size: 14px;
-      transition: border-color 0.3s;
+      transition: all 0.3s ease;
+      outline: none;
+      appearance: none;
+    }
+
+    .form-group select option {
+      background: #333;
+      color: white;
     }
 
     .form-group input:focus,
     .form-group select:focus {
-      outline: none;
-      border-color: #667eea;
+      border-color: #4facfe;
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 10px rgba(79, 172, 254, 0.3);
+    }
+
+    .form-group label {
+      position: absolute;
+      left: 45px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus~label,
+    .form-group input:not(:placeholder-shown)~label,
+    .form-group select:valid~label {
+      top: -10px;
+      left: 10px;
+      font-size: 12px;
+      color: #4facfe;
+      background: #1a1a2e;
+      padding: 0 5px;
+      border-radius: 4px;
+    }
+
+    .form-group select~label {
+      display: none;
     }
 
     .btn {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
+      background: var(--primary-gradient);
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-weight: 600;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
       color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin-top: 10px;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
     }
 
-    .link {
+    .links {
       text-align: center;
-      margin-top: 20px;
-      color: #666;
-      font-size: 14px;
+      margin-top: 25px;
     }
 
-    .link a {
-      color: #667eea;
+    .links p {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .links a {
+      color: #4facfe;
       text-decoration: none;
       font-weight: 600;
-      cursor: pointer;
+      transition: color 0.3s;
     }
 
-    .link a:hover {
+    .links a:hover {
+      color: #00f2fe;
       text-decoration: underline;
     }
 
@@ -119,131 +235,149 @@
       border-radius: 8px;
       margin-bottom: 20px;
       font-size: 14px;
+      text-align: center;
       display: none;
+      animation: fadeIn 0.3s;
     }
 
     .message.success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
+      background: rgba(46, 213, 115, 0.2);
+      border: 1px solid #2ed573;
+      color: #2ed573;
     }
 
     .message.error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
+      background: rgba(255, 71, 87, 0.2);
+      border: 1px solid #ff4757;
+      color: #ff4757;
     }
 
-    .message.show {
-      display: block;
-    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
 
-    h2 {
-      color: #333;
-      margin-bottom: 25px;
-      text-align: center;
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
+
 <body>
-<div class="container">
-  <div class="header">
-    <h1>VBS</h1>
-    <p>Virtual Banking System</p>
+
+  <div class="container">
+    <div class="glass-card">
+
+      <div class="header">
+        <i class="fas fa-fingerprint logo-icon"></i>
+        <h1>Welcome Back</h1>
+        <p>Login to your secure dashboard</p>
+      </div>
+
+      <div id="loginMessage" class="message"></div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <i class="fas fa-user"></i>
+          <input type="text" id="loginUsername" placeholder=" " required>
+          <label>Username</label>
+        </div>
+
+        <div class="form-group">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="loginPassword" placeholder=" " required>
+          <label>Password</label>
+        </div>
+
+        <div class="form-group">
+          <i class="fas fa-user-shield"></i>
+          <select id="loginRole" required>
+            <option value="" disabled selected>Select Access Level</option>
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn">Login</button>
+      </form>
+
+      <div class="links">
+        <p>New here? <a href="signup.html">Create Account</a></p>
+        <p><a href="home.html" style="font-size: 13px; opacity: 0.8;"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </p>
+      </div>
+    </div>
   </div>
 
-  <div class="content">
-    <h2>Login</h2>
+  <script>
+    const API_URL = 'http://localhost:8081';
 
-    <div id="loginMessage" class="message"></div>
-
-    <form id="loginForm">
-      <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="loginUsername" required>
-      </div>
-
-      <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="loginPassword" required>
-      </div>
-
-      <div class="form-group">
-        <label>Role</label>
-        <select id="loginRole" required>
-          <option value="">Select Role</option>
-          <option value="customer">Customer</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-
-      <button type="submit" class="btn">Login</button>
-    </form>
-
-    <div class="link">
-      Don't have an account? <a onclick="window.location.href='signup.html'">Sign Up</a>
-    </div>
-    <div class="link">
-      <a onclick="window.location.href='home.html'">← Back to Home</a>
-    </div>
-  </div>
-</div>
-
-<script>
-  const API_URL = 'http://localhost:8081';
-
-  function showMessage(elementId, message, type) {
-    const messageEl = document.getElementById(elementId);
-    messageEl.textContent = message;
-    messageEl.className = `message ${type} show`;
-  }
-
-  document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const loginData = {
-      username: document.getElementById('loginUsername').value,
-      password: document.getElementById('loginPassword').value,
-      role: document.getElementById('loginRole').value
-    };
-
-    try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData)
-      });
-
-      const result = (await response.text()).trim();
-
-      if (/^\d+$/.test(result)) {
-        showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
-
-        localStorage.clear();
-        localStorage.setItem("userId", result);
-
-        const role = loginData.role.trim().toLowerCase();
-        localStorage.setItem("role", role);
-
-        setTimeout(() => {
-          if (role === "admin") {
-            window.location.href = `admin.html?id=${result}`;
-          } else {
-            window.location.href = `dashboard.html?id=${result}`;
-          }
-        }, 800);
-
-      } else {
-        showMessage('loginMessage', result, 'error');
-      }
-    } catch (error) {
-      showMessage('loginMessage', 'Error connecting to server. Please try again.', 'error');
-      console.error('Login error:', error);
+    function showMessage(elementId, message, type) {
+      const messageEl = document.getElementById(elementId);
+      messageEl.textContent = message;
+      messageEl.className = `message ${type}`;
+      messageEl.style.display = "block";
     }
-  });
-</script>
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const btn = e.target.querySelector('button');
+      const originalText = btn.innerText;
+      btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Authenticating...';
+      btn.disabled = true;
+
+      const loginData = {
+        username: document.getElementById('loginUsername').value,
+        password: document.getElementById('loginPassword').value,
+        role: document.getElementById('loginRole').value
+      };
+
+      try {
+        const response = await fetch(`${API_URL}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(loginData)
+        });
+
+        const result = (await response.text()).trim();
+
+        if (/^\d+$/.test(result)) {
+          showMessage('loginMessage', 'Login successful! Redirecting...', 'success');
+
+          localStorage.clear();
+          localStorage.setItem("userId", result);
+
+          const role = loginData.role.trim().toLowerCase();
+          localStorage.setItem("role", role);
+
+          setTimeout(() => {
+            if (role === "admin") {
+              window.location.href = `admin.html?id=${result}`;
+            } else {
+              window.location.href = `dashboard.html?id=${result}`;
+            }
+          }, 800);
+
+        } else {
+          showMessage('loginMessage', result, 'error');
+          btn.innerText = originalText;
+          btn.disabled = false;
+        }
+      } catch (error) {
+        showMessage('loginMessage', 'Connection failed. Check your network.', 'error');
+        console.error('Login error:', error);
+        btn.innerText = originalText;
+        btn.disabled = false;
+      }
+    });
+  </script>
 
 </body>
+
 </html>
