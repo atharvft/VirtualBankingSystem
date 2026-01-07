@@ -253,14 +253,41 @@
       // Sort by ID desc as proxy for time if date not granular enough
       data.sort((a, b) => b.id - a.id);
 
-      container.innerHTML = data.map(item => `
+      container.innerHTML = data.map(item => {
+        let desc = item.description;
+        let icon = 'fa-exchange-alt';
+        let iconColor = '#4facfe';
+
+        // Format Admin Actions
+        // Backend Pattern: "Admin" + adminId + "Created User" + username
+        // Regex to capture: Admin(\d+)(Created|Deleted) User(.+)
+        const adminRegex = /^Admin(\d+)(Created|Deleted)\s+User(.+)$/i;
+        const match = desc.match(adminRegex);
+
+        if (match) {
+          const adminId = match[1];
+          const action = match[2]; // Created or Deleted
+          const targetUser = match[3];
+
+          if (action.toLowerCase() === 'created') {
+            icon = 'fa-user-plus';
+            iconColor = '#2ed573'; // Success Green
+            desc = `Admin <small style="opacity:0.7">(ID:${adminId})</small> <strong>created</strong> user <strong>${targetUser}</strong>`;
+          } else {
+            icon = 'fa-user-minus';
+            iconColor = '#ff4757'; // Danger Red
+            desc = `Admin <small style="opacity:0.7">(ID:${adminId})</small> <strong>deleted</strong> user <strong>${targetUser}</strong>`;
+          }
+        }
+
+        return `
                 <div class="history-card">
                     <div class="card-left">
-                        <div class="icon-box">
-                            <i class="fas fa-exchange-alt"></i>
+                        <div class="icon-box" style="color: ${iconColor}; background: rgba(255,255,255,0.05);">
+                            <i class="fas ${icon}"></i>
                         </div>
                         <div class="details">
-                            <h3>${item.description}</h3>
+                            <h3>${desc}</h3>
                             <p>${new Date(item.date).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</p>
                         </div>
                     </div>
@@ -268,7 +295,7 @@
                         <span class="transaction-id">#${item.id}</span>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
     }
 
     window.onload = loadHistory;
